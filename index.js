@@ -8,5 +8,5 @@ app.use(express.json())
 
 app.use("/api/products", productRoutes)
 
-const PORT = 3001
+const PORT = process.env.PORT || 3001
 app.listen(PORT, () => console.log("Server Running")) 
