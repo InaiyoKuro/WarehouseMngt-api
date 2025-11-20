@@ -2,7 +2,7 @@ const jwt = require("jsonwebtoken")
 
 const authenticate = (req, res, next) => {
   const authHeader = req.headers["authorization"]
-  console.log(authHeader)
+
   const accessToken = authHeader && authHeader.split(" ")[1]
 
   if(!accessToken) {

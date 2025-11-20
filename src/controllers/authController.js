@@ -92,7 +92,6 @@ const login = (req,res) => {
         refreshToken,
         user: {
           id: result[0].id,
-          email: result[0].email,
           username: result[0].username,
           role: result[0].role,
         }
@@ -105,4 +104,33 @@ const login = (req,res) => {
   }
 }
 
-module.exports = { register, getUsers, login }
+
+const profile = (req, res) => {
+  try {
+    return res.json({ status: true, user: req.user })
+
+  } catch(err) {
+      return res.status(500).json({ error: err.message })
+  }
+}
+
+const refreshToken = (req,res) => {
+  try {
+    const token = req.body.token
+    if(!token) return res.json({ status: false, msg: "Lỗi token" })
+    
+    const payload = jwt.verify(token, process.env.JWT_SECRET)
+
+    const accessToken = jwt.sign(
+      { id: payload.id, username: payload.username, role: payload.role },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    )
+    return res.json({ status: true, accessToken })
+    
+  } catch(err) {
+      return res.status(500).json({ error: err.message })
+  }
+}
+
+module.exports = { register, getUsers, login, profile, refreshToken }
