@@ -1,5 +1,6 @@
 const crypto = require("crypto")
 const db = require("../config/db.js")
+const jwt = require("jsonwebtoken")
 
 const hashPassword = (password) => {
   return crypto.createHash("sha256").update(password).digest("hex")
@@ -12,16 +13,16 @@ const register = (req, res) => {
     
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if(!emailRegex.test(email)){
-      return res.status(400).json({ status: false, msg: "Email invalid" })
+      return res.json({ status: false, msg: "Email invalid" })
     }
     
     const usernameRegex = /^[a-zA-Z0-9]+$/;
     if(!usernameRegex.test(username)){
-      return res.status(400).json({ status: false, msg: "Username invalid" })
+      return res.json({ status: false, msg: "Username invalid" })
     }
 
     if(password.length < 6){
-      return res.status(400).json({ status: false, msg: "Password too short" })
+      return res.json({ status: false, msg: "Password too short" })
     }
     
     const hash = hashPassword(password)
@@ -56,6 +57,8 @@ const getUsers = (req,res) => {
   }
 }
 
+
+
 const login = (req,res) => {
   try{
     const { username, password } = req.body
@@ -71,9 +74,22 @@ const login = (req,res) => {
 
       if(result.length === 0) return res.json({ status: false, msg: "Sai tài khoản hoặc mật khẩu" })
       
+      const accessToken = jwt.sign(
+        {id: result[0].id, username: result[0].username, role: result[0].role},
+        process.env.JWT_SECRET,
+        { expiresIn: "1h" }
+      )
+      const refreshToken = jwt.sign(
+        {id: result[0].id, username: result[0].username, role: result[0].role},
+        process.env.JWT_SECRET,
+        { expiresIn: "7d" }
+      )
+
       return res.json({
         status: true,
         msg: "Đăng nhập thành công",
+        accessToken,
+        refreshToken,
         user: {
           id: result[0].id,
           email: result[0].email,
