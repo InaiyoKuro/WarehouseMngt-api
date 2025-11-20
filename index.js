@@ -4,7 +4,7 @@ const productRoutes = require("./src/routes/productRoutes.js")
 const authRoutes = require("./src/routes/authRoutes.js")
 
 const app = express()
-app.use(cors())
+app.use(cors({ credentials: true }))
 app.use(express.json())
 
 app.use("/api/products", productRoutes)
