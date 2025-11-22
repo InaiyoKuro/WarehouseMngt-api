@@ -42,21 +42,6 @@ const register = (req, res) => {
   }
 }
 
-const getUsers = (req,res) => {
-  try{
-    const sql = `
-    SELECT * FROM users
-    `
-
-    db.query(sql, (err, result) => {
-      if(err) return res.status(501).json({ status: false, error: err.message })
-      return res.json({ result })
-    })
-  }catch(e){
-    console.log(e)
-  }
-}
-
 
 
 const login = (req,res) => {
@@ -104,16 +89,6 @@ const login = (req,res) => {
   }
 }
 
-
-const profile = (req, res) => {
-  try {
-    return res.json({ status: true, user: req.user })
-
-  } catch(err) {
-      return res.status(500).json({ error: err.message })
-  }
-}
-
 const refreshToken = (req,res) => {
   try {
     const token = req.body.token
@@ -133,4 +108,4 @@ const refreshToken = (req,res) => {
   }
 }
 
-module.exports = { register, getUsers, login, profile, refreshToken }
+module.exports = { register, login, refreshToken }

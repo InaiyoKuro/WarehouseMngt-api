@@ -1,6 +1,6 @@
 const authorize = (roles) => {
   return (req, res, next) => {
-    if(!roles.include(req.user.role)){
+    if(!roles.includes(req.user.role)){
       return res.status(403).json({ status: false, msg: "Bạn không có quyền thực hiện hành động này!"})
     }
     next()
